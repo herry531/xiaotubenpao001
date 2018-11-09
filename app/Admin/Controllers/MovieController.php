@@ -52,7 +52,7 @@ class MovieController extends Controller
 
     public function show($id)
     {
-
+ 
         return Admin::content(function (Content $content) use ($id) {
 
             $content->header('用户信息');
