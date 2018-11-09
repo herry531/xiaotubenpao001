@@ -1,0 +1,219 @@
+<?php
+
+namespace App\Admin\Controllers;
+
+use App\Visiting;
+
+use Encore\Admin\Form;
+use Encore\Admin\Grid;
+use Encore\Admin\Facades\Admin;
+use Encore\Admin\Layout\Content;
+use App\Http\Controllers\Controller;
+use Encore\Admin\Controllers\ModelForm;
+use App\Admin\Extensions\ExcelExpoter;
+
+class VisitingController extends Controller
+{
+    use ModelForm;
+
+    /**
+     * Index interface.
+     *
+     * @return Content
+     */
+    public function index()
+    {
+        return Admin::content(function (Content $content) {
+
+            $content->header('来访客户信息');
+            $content->description('');
+
+            $content->body($this->grid());
+        });
+    }
+
+    /**
+     * Edit interface.
+     *
+     * @param $id
+     * @return Content
+     */
+    public function edit($id)
+    {
+        return Admin::content(function (Content $content) use ($id) {
+
+            $content->header('来访客户信息');
+            $content->description('编辑信息');
+
+            $content->body($this->form()->edit($id));
+        });
+    }
+
+    public function show($id)
+    {
+
+        return Admin::content(function (Content $content) use ($id) {
+
+            $content->header('来访客户信息');
+            $content->description('编辑信息');
+
+            $content->body($this->listfrom()->edit($id));
+        });
+    }
+
+    /**
+     * Create interface.
+     *
+     * @return Content
+     */
+    public function create()
+    {
+        return Admin::content(function (Content $content) {
+
+            $content->header('来访客户信息');
+            $content->description('新增');
+
+            $content->body($this->form());
+        });
+    }
+
+    /**
+     * Make a grid builder.
+     *
+     * @return Grid
+     */
+    protected function grid()
+    {
+        return Admin::grid(Visiting::class, function (Grid $grid) {
+
+                $grid->actions(function ($actions) {
+                    // append一个操作
+
+                    $actions->disableDelete();
+                });
+            $grid->column('姓名')->display(function ($name) {
+                if($this->status =='3'){
+                    return "<span class='label label-danger'>$this->name</span>";
+
+                }elseif($this->status=='2'){
+                    return "<span class='label label-warning'>$this->name</span>";
+                }elseif($this->status=='1') {
+                    return "<span class='label label-default'>$this->name</span>";
+                }elseif($this->status == '4'){
+                    return "<span class='label label-success'>$this->name</span>";
+                }else{
+                    return "<span >$this->name</span>";
+                }
+            });
+                $grid->model()->orderBy('status', 'desc');
+                $grid->model()->orderBy('rate', 'desc');
+                $grid->model()->orderBy('created_at', 'desc');
+                $grid->rate('星级')->display(function ($rate) {
+                    $html = "<i class='fa fa-star' style='color:#ff8913'></i>";
+
+                    if ($rate < 1) {
+                        return '';
+                    }
+
+                    return join('&nbsp;', array_fill(0, min(5, $rate), $html));
+                });
+
+
+                $grid->age('年龄');
+                $grid->gender('性别');
+                $grid->phone('电话');
+                $grid->weixin_num('微信号');
+                $grid->source('来源渠道');
+                $grid->course('意向课程');
+                $grid->care('在意问题点');
+                $grid->visit_time('到访日期');
+
+            $grid->tools(function ($tools) {
+                $tools->batch(function ($batch) {
+                    $batch->disableDelete();
+                });
+            });
+
+                $grid->filter(function ($filter) {
+                    $filter->disableIdFilter();
+                    $filter->like('name','姓名');
+                    $filter->like('phone','电话');
+                    $filter->like('weixin_num','微信号');
+                    $filter->like('source','来源渠道');
+                    $filter->like('visitors','是否到访');
+                    $filter->date('visit_time','到访时间');
+                });
+                $grid->paginate(15);
+
+            $excel = new ExcelExpoter();
+            $excel->setAttr(['姓名','性别','年龄','电话','微信号','基础','来源渠道','学习目的','意向课程','职业','在意问题点','详细信息','对我们的建议','到访日期','计划学习时间'], ['name','gender','age','weixin_num','source','purpose','course','professional','care','details','advice','visit_time','plan_time']);
+            $grid->exporter($excel);
+
+        });
+    }
+
+    /**
+     * Make a form builder.
+     *
+     * @return Form
+     */
+
+    protected function listfrom()
+    {
+        return Admin::form(Visiting::class, function (Form $form) {
+
+            $form->row(function ($row) use ($form) {
+
+                $row->width(4)->display('name', '姓名');
+                $row->width(4)->display('age', '年龄');
+                $row->width(4)->display('gender','性别');
+                $row->width(4)->display('basis','基础');
+                $row->width(4)->display('phone', '电话');
+                $row->width(4)->display('weixin_num','微信号');
+                $row->width(4)->display('source','来源渠道');
+                $row->width(4)->display('city','所在地区');
+                $row->width(4)->display('purpose','学习目的');
+                $row->width(4)->display('course','意向课程');
+                $row->width(4)->display('care','在意问题点');
+                $row->width(4)->display('details','具体详细信息');
+                $row->width(4)->display('advice','对我们的建议');
+                $row->width(4)->display('visit_time','到访日期');
+                $row->width(4)->display('plan_time','计划学习时间');
+
+            }, $form);
+        });
+    }
+
+    protected function form()
+    {
+
+        return Admin::form(Visiting::class, function (Form $form) {
+
+            $form->row(function ($row) use ($form) {
+                $row->width(4)->text('name', '姓名');
+                $row->width(4)->select('age', '年龄')->options(['20岁以下'=>'20岁以下','20-30岁'=>'20-30岁','30-40岁'=>'30-40岁','40岁+'=>'40岁+']);
+                $row->width(4)->select('gender','性别')->options(['男'=>'男','女'=>'女'])->rules('required');
+                $row->width(4)->select('basis','基础')->options(['零基础'=>'零基础','有基础'=>'有基础'])->rules('required');
+                $row->width(4)->number('rate','重要星级');
+
+                $row->width(4)->mobile('phone', '电话');
+                $row->width(4)->text('weixin_num','微信号');
+                $row->width(4)->select('source','报名来源')->options(['百度'=>'百度','微博'=>'微博','今日头条'=>'今日头条','360搜索'=>'360搜索','豆瓣'=>'豆瓣','公众号'=>'公众号','朋友圈'=>'朋友圈','抖音'=>'抖音','搜狐'=>'搜狐','美团'=>'美团','大众点评'=>'大众点评','熟人介绍'=>'熟人介绍','学员介绍'=>'学员介绍','其它'=>'其它'])->rules('required');
+                $row->width(4)->text('city','所在地区');
+                $row->width(4)->text('purpose','学习目的');
+                $row->width(4)->text('course','意向课程');
+
+                $row->width(4)->text('care','在意问题点');
+                $row->width(4)->text('advice','对我们的建议');
+                $row->width(4)->date('visit_time','到访日期');
+                $row->width(4)->select('status','重要程度')->options(['1'=>'无意向','2'=>'跟进','3'=>'重要客户','4'=>'成交客户']);
+
+                $row->width(4)->select('plan_time', '计划学习时间')->options(['1个月内'=>'1个月内','3个月内'=>'3个月内','半年内'=>'半年内','1年内'=>'1年内','其它'=>'其它']);;
+                $row->width(4)->text('details','具体详细信息');
+
+            }, $form);
+        });
+
+
+    }
+}
