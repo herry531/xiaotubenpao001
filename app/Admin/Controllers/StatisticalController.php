@@ -48,7 +48,7 @@ class StatisticalController extends Controller
     {
         return Admin::content(function (Content $content) use ($id) {
 
-            $content->header('用户信息');
+            $content->header('数据统计');
             $content->description('编辑信息');
 
             $content->body($this->form()->edit($id));
@@ -65,7 +65,7 @@ class StatisticalController extends Controller
     {
         return Admin::content(function (Content $content) {
 
-            $content->header('用户信息');
+            $content->header('数据统计');
             $content->description('新增');
 
             $content->body($this->form());
@@ -89,20 +89,18 @@ class StatisticalController extends Controller
                     $actions->disableView();
 
                 });
+            $grid->name('数据名称')->display(function ($name) {
+                return "<span class='label label-success'>$this->name</span>";
+            });
                 $grid->model()->orderBy('id', 'desc');
-
-                $grid->name('渠道');
                 $grid->url('链接')->link();
-
                 $grid->disableFilter();
                 $grid->disableExport();
-
                 $grid->tools(function ($tools) {
                     $tools->batch(function ($batch) {
                         $batch->disableDelete();
                     });
                 });
-
                 $grid->paginate(15);
 
 
