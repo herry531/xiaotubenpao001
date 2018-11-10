@@ -190,6 +190,17 @@ class MovieController extends Controller
                 $row->width(4)->datetime('three_data','三次沟通时间');
 
             }, $form);
+            $form->tools(function (Form\Tools $tools) {
+
+
+
+                // 去掉`删除`按钮
+                $tools->disableDelete();
+
+
+
+
+            });
         });
 
 

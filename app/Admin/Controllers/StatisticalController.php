@@ -2,9 +2,9 @@
 
 namespace App\Admin\Controllers;
 
-use App\Channel;
-use App\Visiting;
+use App\Movie;
 
+use App\Statistical;
 use Encore\Admin\Form;
 use Encore\Admin\Grid;
 use Encore\Admin\Facades\Admin;
@@ -13,7 +13,11 @@ use App\Http\Controllers\Controller;
 use Encore\Admin\Controllers\ModelForm;
 use App\Admin\Extensions\ExcelExpoter;
 
-class ChannelController extends Controller
+use App\Models\Post;
+
+use Encore\Admin\Show;
+
+class StatisticalController extends Controller
 {
     use ModelForm;
 
@@ -26,8 +30,9 @@ class ChannelController extends Controller
     {
         return Admin::content(function (Content $content) {
 
-            $content->header('每日客户来源信息');
-            $content->description('');
+
+            $content->header('数据统计');
+            $content->description('　');
 
             $content->body($this->grid());
         });
@@ -43,7 +48,7 @@ class ChannelController extends Controller
     {
         return Admin::content(function (Content $content) use ($id) {
 
-            $content->header('每日客户来源信息');
+            $content->header('用户信息');
             $content->description('编辑信息');
 
             $content->body($this->form()->edit($id));
@@ -60,7 +65,7 @@ class ChannelController extends Controller
     {
         return Admin::content(function (Content $content) {
 
-            $content->header('每日客户来源信息');
+            $content->header('用户信息');
             $content->description('新增');
 
             $content->body($this->form());
@@ -74,26 +79,32 @@ class ChannelController extends Controller
      */
     protected function grid()
     {
-        return Admin::grid(Channel::class, function (Grid $grid) {
-            $grid->model()->orderBy('date', 'desc');
-            $grid->source('客户来源');
-            $grid->num('人数');
-            $grid->date('日期');
-            $grid->note('备注');
-            $grid->disableExport();
+        return Admin::grid(Statistical::class, function (Grid $grid) {
 
-            $grid->actions(function ($actions) {
-                // append一个操作
+                $grid->actions(function ($actions) {
+                    // append一个操作
+//                    $actions->append("<a href='movies/{$actions->getKey()}/list'><i class='fa fa-eye'></i></a>");
+                    $actions->disableDelete();
+                        // append一个操作
+                    $actions->disableView();
 
-                $actions->disableView();
-                $actions->disableDelete();
-            });
-
-            $grid->tools(function ($tools) {
-                $tools->batch(function ($batch) {
-                    $batch->disableDelete();
                 });
-            });
+                $grid->model()->orderBy('id', 'desc');
+
+                $grid->name('渠道');
+                $grid->url('链接')->link();
+
+                $grid->disableFilter();
+                $grid->disableExport();
+
+                $grid->tools(function ($tools) {
+                    $tools->batch(function ($batch) {
+                        $batch->disableDelete();
+                    });
+                });
+
+                $grid->paginate(15);
+
 
         });
     }
@@ -108,16 +119,10 @@ class ChannelController extends Controller
 
     protected function form()
     {
-
-        return Admin::form(Channel::class, function (Form $form) {
-
+        return Admin::form(Statistical::class, function (Form $form) {
             $form->row(function ($row) use ($form) {
-
-                $row->width(4)->select('source','客户来源')->options(['百度'=>'百度','微博'=>'微博','今日头条'=>'今日头条','360搜索'=>'360搜索','豆瓣'=>'豆瓣','公众号'=>'公众号','朋友圈'=>'朋友圈','抖音'=>'抖音','搜狐'=>'搜狐','美团'=>'美团','大众点评'=>'大众点评','熟人介绍'=>'熟人介绍','学员介绍'=>'学员介绍','其它'=>'其它'])->rules('required');
-                $row->width(4)->number('num','人数')->rules('required');;
-                $row->width(4)->date('date','日期')->rules('required');;
-                $row->width(4)->text('note','备注');
-
+                $row->width(4)->text('name', '姓名');
+                $row->width(4)->text('url', '地址');
             }, $form);
             $form->tools(function (Form\Tools $tools) {
 

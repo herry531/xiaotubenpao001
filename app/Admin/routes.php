@@ -16,6 +16,7 @@ Route::group([
     $router->resource('archives', ArchivesController::class);//学员档案
     $router->resource('visiting', VisitingController::class);//来访信息
     $router->resource('channel', ChannelController::class);//来源渠道
+    $router->resource('statistical', StatisticalController::class);//数据统计
     $router->resource('spending', SpendingController::class);//来源渠道
 
     $router->resource('financial', FinancialController::class);//财务系统

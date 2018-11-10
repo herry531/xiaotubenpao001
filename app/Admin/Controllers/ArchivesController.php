@@ -213,14 +213,6 @@ class ArchivesController extends Controller
 
             });
 
-
-//
-//            $grid->define_preg(url('admin/archives/1/network'), '渠道数据');
-//            $grid->define_preg1(url('admin/archives/2/network'), '性别数据');
-//            $grid->define_preg2(url('admin/archives/3/network'), '年龄数据');
-
-
-
             $grid->paginate(15);
 
             $excel = new ExcelExpoter();
@@ -259,6 +251,17 @@ class ArchivesController extends Controller
                 $row->width(4)->image('images','照片');
 
             }, $form);
+            $form->tools(function (Form\Tools $tools) {
+
+
+
+                // 去掉`删除`按钮
+                $tools->disableDelete();
+
+
+
+
+            });
         });
 
 

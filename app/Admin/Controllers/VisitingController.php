@@ -213,6 +213,16 @@ class VisitingController extends Controller
                 $row->width(4)->text('details','具体详细信息');
 
             }, $form);
+            $form->tools(function (Form\Tools $tools) {
+
+
+
+                // 去掉`删除`按钮
+                $tools->disableDelete();
+
+
+
+            });
         });
 
 
