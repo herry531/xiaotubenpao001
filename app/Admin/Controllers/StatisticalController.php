@@ -127,7 +127,7 @@ class StatisticalController extends Controller
                 // 去掉`列表`按钮
                 $tools->disableList();
 
-                // 去掉`删除`按钮
+                // 去掉`删除`按钮composer require laravel-admin-ext/reporter -vvv
                 $tools->disableDelete();
 
                 // 去掉`查看`按钮
