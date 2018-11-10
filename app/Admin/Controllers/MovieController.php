@@ -185,22 +185,17 @@ class MovieController extends Controller
                 $row->width(4)->text('care','在意问题点');
                 $row->width(4)->text('text','具体详细信息');
 
-                $row->width(4)->datetime('one_data','初次沟通时间');
-                $row->width(4)->datetime('tow_data','二次沟通时间');
-                $row->width(4)->datetime('three_data','三次沟通时间');
+                $row->width(4)->date('one_data','初次沟通时间');
+                $row->width(4)->date('tow_data','二次沟通时间');
+                $row->width(4)->date('three_data','三次沟通时间');
 
             }, $form);
             $form->tools(function (Form\Tools $tools) {
-
-
-
                 // 去掉`删除`按钮
                 $tools->disableDelete();
 
-
-
-
             });
+
         });
 
 
