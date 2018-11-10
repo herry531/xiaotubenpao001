@@ -81,11 +81,13 @@ class ChannelController extends Controller
             $grid->date('日期');
             $grid->note('备注');
             $grid->disableExport();
-//            $grid->actions(function ($actions) {
-//                // append一个操作
-//
-//                $actions->disableDelete();
-//            });
+
+            $grid->actions(function ($actions) {
+                // append一个操作
+
+                $actions->disableView();
+                $actions->disableDelete();
+            });
 
             $grid->tools(function ($tools) {
                 $tools->batch(function ($batch) {

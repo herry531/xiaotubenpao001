@@ -12,6 +12,10 @@ use App\Http\Controllers\Controller;
 use Encore\Admin\Controllers\ModelForm;
 use App\Admin\Extensions\ExcelExpoter;
 
+use App\Models\Post;
+
+use Encore\Admin\Show;
+
 class VisitingController extends Controller
 {
     use ModelForm;
@@ -49,16 +53,38 @@ class VisitingController extends Controller
         });
     }
 
-    public function show($id)
+    public function show($id, Content $content)
     {
+        return $content->header('Post')
+            ->description('详情')
+            ->body(Admin::show(Visiting::findOrFail($id), function (Show $show) {
+                $show->panel()
+                    ->tools(function ($tools) {
+                        $tools->disableEdit();
+                        $tools->disableList();
+                        $tools->disableDelete();
+                    });;
+                $show->panel()
+                    ->style('danger')
+                    ->title('基本信息');
+                $show->name('姓名');
+                $show->age('年龄');
+                $show->gender('性别');
+                $show->basis('基础');
+                $show->gender('性别');
+                $show->phone('电话');
+                $show->weixin_num('微信号');
+                $show->source('来源渠道');
+                $show->city('所在地区');
+                $show->purpose('学习目的');
+                $show->course('意向课程');
+                $show->care('在意问题点');
+                $show->details('具体详细信息');
+                $show->advice('对我们的建议');
+                $show->visit_time('到访日期');
+                $show->plan_time('计划学习时间');
 
-        return Admin::content(function (Content $content) use ($id) {
-
-            $content->header('来访客户信息');
-            $content->description('编辑信息');
-
-            $content->body($this->listfrom()->edit($id));
-        });
+            }));
     }
 
     /**
@@ -158,31 +184,6 @@ class VisitingController extends Controller
      * @return Form
      */
 
-    protected function listfrom()
-    {
-        return Admin::form(Visiting::class, function (Form $form) {
-
-            $form->row(function ($row) use ($form) {
-
-                $row->width(4)->display('name', '姓名');
-                $row->width(4)->display('age', '年龄');
-                $row->width(4)->display('gender','性别');
-                $row->width(4)->display('basis','基础');
-                $row->width(4)->display('phone', '电话');
-                $row->width(4)->display('weixin_num','微信号');
-                $row->width(4)->display('source','来源渠道');
-                $row->width(4)->display('city','所在地区');
-                $row->width(4)->display('purpose','学习目的');
-                $row->width(4)->display('course','意向课程');
-                $row->width(4)->display('care','在意问题点');
-                $row->width(4)->display('details','具体详细信息');
-                $row->width(4)->display('advice','对我们的建议');
-                $row->width(4)->display('visit_time','到访日期');
-                $row->width(4)->display('plan_time','计划学习时间');
-
-            }, $form);
-        });
-    }
 
     protected function form()
     {

@@ -12,6 +12,10 @@ use App\Http\Controllers\Controller;
 use Encore\Admin\Controllers\ModelForm;
 use App\Admin\Extensions\ExcelExpoter;
 
+use App\Models\Post;
+
+use Encore\Admin\Show;
+
 class MovieController extends Controller
 {
     use ModelForm;
@@ -50,16 +54,37 @@ class MovieController extends Controller
         });
     }
 
-    public function show($id)
+    public function show($id, Content $content)
     {
- 
-        return Admin::content(function (Content $content) use ($id) {
+        return $content->header('Post')
+            ->description('详情')
+            ->body(Admin::show(Movie::findOrFail($id), function (Show $show) {
+                $show->panel()
+                    ->tools(function ($tools) {
+                        $tools->disableEdit();
 
-            $content->header('用户信息');
-            $content->description('编辑信息');
+                        $tools->disableDelete();
+                    });;
 
-            $content->body($this->listfrom()->edit($id));
-        });
+                $show->panel()
+                    ->style('danger')
+                    ->title('基本信息');
+                $show->name('姓名');
+                $show->age('年龄');
+                $show->gender('性别');
+                $show->phone('电话');
+                $show->weixin_name('微信名称');
+                $show->weixin_num('微信号');
+                $show->source('渠道');
+                $show->city('地区');
+                $show->purpose('学习目的');
+                $show->course('意向课程');
+                $show->care('在意问题点');
+                $show->text('具体详细信息');
+                $show->one_data('初次沟通时间');
+                $show->tow_data('二次沟通时间');
+                $show->three_data('三次沟通时间');
+            }));
     }
 
     /**
@@ -127,8 +152,7 @@ class MovieController extends Controller
             $excel = new ExcelExpoter();
             $excel->setAttr(['姓名','性别','年龄','电话','微信名称','微信号','来源渠道','所在地区','学习目的','意向课程','职业','在意问题点','是否到访','详细信息','初次沟通时间','二次沟通时间','三次沟通时间','创建时间'], ['name', 'gender', 'age','phone', 'weixin_name','weixin_num','source','city','purpose','course','professional','care','visitors','text','one_data','tow_data','three_data','created_at']);
             $grid->exporter($excel);
-//            $grid->exporter(new ExcelExpoter());
-//            $grid->model()->where('id', '<', 100);
+
         });
     }
 
@@ -138,33 +162,7 @@ class MovieController extends Controller
      * @return Form
      */
 
-    protected function listfrom()
-    {
-        return Admin::form(Movie::class, function (Form $form) {
 
-            $form->row(function ($row) use ($form) {
-                $row->width(4)->display('name', '姓名');
-                $row->width(4)->display('age', '年龄');
-                $row->width(4)->display('gender','性别');
-                $row->width(4)->display('phone', '电话');
-                $row->width(4)->display('weixin_name','微信名称');
-                $row->width(4)->display('weixin_num','微信号');
-                $row->width(4)->display('source','来源渠道');
-                $row->width(4)->display('city','所在地区');
-                $row->width(4)->display('purpose','学习目的');
-                $row->width(4)->display('course','意向课程');
-
-                $row->width(4)->display('care','在意问题点');
-                $row->width(4)->display('text','具体详细信息');
-
-                $row->width(4)->display('visit_data','到访日期');
-                $row->width(4)->display('one_data','初次沟通时间');
-                $row->width(4)->display('tow_data','二次沟通时间');
-                $row->width(4)->display('three_data','三次沟通时间');
-
-            }, $form);
-        });
-    }
 
     protected function form()
     {
@@ -186,8 +184,6 @@ class MovieController extends Controller
 
                 $row->width(4)->text('care','在意问题点');
                 $row->width(4)->text('text','具体详细信息');
-
-
 
                 $row->width(4)->datetime('one_data','初次沟通时间');
                 $row->width(4)->datetime('tow_data','二次沟通时间');

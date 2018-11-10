@@ -43,20 +43,37 @@ class ArchivesController extends Controller
             $content->body($this->grid());
         });
     }
-
-    public function show($id)
+    public function show($id, Content $content)
     {
+        return $content->header('Post')
+            ->description('详情')
+            ->body(Admin::show(Archives::findOrFail($id), function (Show $show) {
 
-
-
-        return Admin::content(function (Content $content) use ($id) {
-
-            $content->header('学员档案信息');
-            $content->description('信息');
-
-            $content->body($this->listfrom()->edit($id));
-        });
+                $show->panel()
+                    ->tools(function ($tools) {
+                        $tools->disableEdit();
+                        $tools->disableList();
+                        $tools->disableDelete();
+                    });;
+                $show->panel()
+                    ->style('danger')
+                    ->title('基本信息');
+                $show->name('学员姓名');
+                $show->price('学习价格');
+                $show->age('年龄');
+                $show->phone('学员电话');
+                $show->weixin('学员微信');
+                $show->city('所在地区');
+                $show->course('学习课程');
+                $show->images()->image();
+                $show->start_time('开始学习日期');
+                $show->expect_time('预计学习日期');
+                $show->content('毕业后跟进信息');
+                $show->note('备注');
+            }));
     }
+
+
 
     public function network()
     {
@@ -213,31 +230,7 @@ class ArchivesController extends Controller
         });
     }
 
-    protected function listfrom()
-    {
-        return Admin::form(Archives::class, function (Form $form) {
 
-            $form->row(function ($row) use ($form) {
-
-
-                $row->width(4)->display('name', '学员姓名');
-                $row->width(4)->display('price', '学习价格');
-                $row->width(4)->display('gender','学员性别');
-                $row->width(4)->display('age','年龄');
-                $row->width(4)->display('phone', '学员电话');
-                $row->width(4)->display('weixin','学员微信');
-                $row->width(4)->display('city','所在地区');
-                $row->width(4)->display('course','学习课程');
-                $row->width(4)->display('content','毕业后跟进信息');
-                $row->width(4)->display('note','备注');
-                $row->width(4)->display('start_time','开始学习日期');
-                $row->width(4)->display('expect_time','预计学习日期');
-                $row->width(4)->image('images','照片');
-
-
-            }, $form);
-        });
-    }
 
     /**
      * Make a form builder.
