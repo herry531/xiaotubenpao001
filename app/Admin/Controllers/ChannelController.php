@@ -94,6 +94,11 @@ class ChannelController extends Controller
                     $batch->disableDelete();
                 });
             });
+            $grid->filter(function ($filter) {
+                $filter->disableIdFilter();
+                $filter->like('source','客户来源');
+            });
+            $grid->paginate(15);
 
         });
     }

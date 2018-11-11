@@ -163,7 +163,7 @@ class FinancialController extends Controller
             });
             $grid->paginate(15);
 
-            $grid->define_preg3(url('admin/financial/1/network'), '月报数据');
+//            $grid->define_preg3(url('admin/financial/1/network'), '月报数据');
 
 
         });
