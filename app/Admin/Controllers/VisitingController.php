@@ -131,9 +131,10 @@ class VisitingController extends Controller
                     return "<span >$this->name</span>";
                 }
             });
+            $grid->model()->orderBy('created_at', 'desc');
                 $grid->model()->orderBy('status', 'desc');
                 $grid->model()->orderBy('rate', 'desc');
-                $grid->model()->orderBy('created_at', 'desc');
+
                 $grid->rate('星级')->display(function ($rate) {
                     $html = "<i class='fa fa-star' style='color:#ff8913'></i>";
 

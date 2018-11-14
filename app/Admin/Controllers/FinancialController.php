@@ -131,7 +131,6 @@ class FinancialController extends Controller
 
             $grid->actions(function ($actions) {
                 // append一个操作
-
                 $actions->disableDelete();
             });
             $grid->model()->orderBy('id', 'desc');
