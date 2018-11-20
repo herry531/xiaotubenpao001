@@ -34,12 +34,12 @@ EOT;
     {
         Admin::script($this->script());
 
-        $qrcode = "<img src='http://www.123.com/upload/{$this->value}' style='height: 150px;width: 150px;'/>";
+        $qrcode = "<img src='http://www.meikai.site/upload/{$this->value}' style='height: 150px;width: 150px;'/>";
 
         return <<<EOT
 
 <div class="input-group" style="width:250px;">
-  <input type="text" id="grid-homepage-{$this->getKey()}" class="form-control input-sm" value="http://www.123.com/upload/{$this->value}" />
+  <input type="text" id="grid-homepage-{$this->getKey()}" class="form-control input-sm" value="http://www.meikai.site/upload/{$this->value}" />
   <span class="input-group-btn">
     <button class="btn btn-default btn-sm clipboard" data-clipboard-target="#grid-homepage-{$this->getKey()}" title="复制完成!">
         <i class="fa fa-clipboard"></i>

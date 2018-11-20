@@ -17,11 +17,13 @@ Route::group([
     $router->resource('visiting', VisitingController::class);//来访信息
     $router->resource('channel', ChannelController::class);//来源渠道
     $router->resource('statistical', StatisticalController::class);//数据统计
-    $router->resource('spending', SpendingController::class);//来源渠道
+    $router->resource('spending', SpendingController::class);//财务支出
 
-    $router->resource('financial', FinancialController::class);//财务系统
+    $router->resource('financial', FinancialController::class);//财务收入
 
-    $router->get('movies/{id}/list', 'MovieController@lists');//客户信息详情
+
+
+//    $router->get('movies/{id}/list', 'MovieController@lists');//客户信息详情
 
 
 
